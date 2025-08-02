@@ -30,12 +30,10 @@ class AttendanceController extends Controller
         $currentTime = Carbon::now();
 
         if ($user->shift === 'pagi') {
-            // Check-in allowed between 7 and 9 AM
             if ($currentTime->hour < 7 || $currentTime->hour >= 9) {
                 return redirect()->back()->with('error', 'Check-in hanya bisa dilakukan pada jam 7 sampai jam 9 pagi untuk shift pagi.');
             }
         } elseif ($user->shift === 'malam') {
-            // Check-in allowed between 3 and 5 PM
             if ($currentTime->hour < 15 || $currentTime->hour >= 5) {
                 return redirect()->back()->with('error', 'Check-in hanya bisa dilakukan pada jam 3 sampai jam 5 sore untuk shift malam.');
             }
@@ -43,7 +41,6 @@ class AttendanceController extends Controller
             return redirect()->back()->with('error', 'Shift karyawan tidak valid.');
         }
 
-        // Check if already checked in today
         $existingAttendance = Attendance::where('user_id', $user->id)
             ->whereDate('check_in_time', Carbon::now())
             ->first();
@@ -76,12 +73,10 @@ class AttendanceController extends Controller
         $currentTime = Carbon::now();
 
         if ($user->shift === 'pagi') {
-            // Check-out allowed until midnight, overtime after 3 PM
             if ($currentTime->hour >= 24) {
                 return redirect()->back()->with('error', 'Check-out hanya bisa dilakukan sampai jam 24.');
             }
         } elseif ($user->shift === 'malam') {
-            // Check-out allowed until midnight, overtime after 9 PM
             if ($currentTime->hour >= 24) {
                 return redirect()->back()->with('error', 'Check-out hanya bisa dilakukan sampai jam 24.');
             }
@@ -89,7 +84,6 @@ class AttendanceController extends Controller
             return redirect()->back()->with('error', 'Shift karyawan tidak valid.');
         }
 
-        // Find today's attendance without check-out
         $todayAttendance = Attendance::where('user_id', $user->id)
             ->whereDate('check_in_time', Carbon::today())
             ->whereNull('check_out_time')
