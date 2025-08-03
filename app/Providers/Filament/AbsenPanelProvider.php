@@ -25,6 +25,7 @@ class AbsenPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->viteTheme('resources/css/filament/absen/theme.css')
             ->default()
             ->id('absen')
             ->path('absen')
