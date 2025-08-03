@@ -4,128 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Absensi Karyawan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-bg-light: #f9fafb;
-            --color-bg-dark: #1f2937;
+            --color-bg-light: #f3f4f6;
+            --color-bg-dark: #111827;
             --color-card-bg-light: #ffffff;
-            --color-card-bg-dark: #374151;
+            --color-card-bg-dark: #1f2937;
             --color-text-light: #1f2937;
-            --color-text-dark: #f3f4f6;
-            --color-primary: #7c3aed;
-            --color-primary-hover: #6d28d9;
-            --color-success-bg: #dcfce7;
-            --color-success-border: #22c55e;
-            --color-success-text: #166534;
-            --color-error-bg: #fee2e2;
-            --color-error-border: #ef4444;
-            --color-error-text: #b91c1c;
-            --color-checkin-bg: var(--color-primary);
-            --color-checkin-hover: var(--color-primary-hover);
-            --color-checkout-bg: #10b981;
-            --color-checkout-hover: #059669;
-            --color-table-header-bg-light: #f3f4f6;
-            --color-table-header-bg-dark: #4b5563;
-            --color-table-border-light: #e5e7eb;
-            --color-table-border-dark: #6b7280;
-            --color-table-text-light: #374151;
-            --color-table-text-dark: #d1d5db;
-            --color-pagination-text-light: #374151;
-            --color-pagination-text-dark: #d1d5db;
-            --color-logout-text-light: #dc2626;
-            --color-logout-text-dark: #f87171;
-            --color-logout-hover-light: #b91c1c;
-            --color-logout-hover-dark: #ef4444;
-            --color-info-text-light: #4b5563;
-            --color-info-text-dark: #d1d5db;
-            --color-app-info-text-light: #6b7280;
-            --color-app-info-text-dark: #9ca3af;
+            --color-text-dark: #e5e7eb;
+            --color-primary: #4f46e5;
+            --color-primary-hover: #4338ca;
+            --color-success: #10b981;
+            --color-success-hover: #059669;
+            --color-error: #ef4444;
+            --color-error-text: #991b1b;
+            --color-info-text-light: #6b7280;
+            --color-info-text-dark: #9ca3af;
+            --color-table-header-light: #f9fafb;
+            --color-table-header-dark: #374151;
+            --color-border-light: #e5e7eb;
+            --color-border-dark: #374151;
             --transition-speed: 0.3s;
         }
 
         html.light {
-            background: var(--color-bg-light);
+            background-color: var(--color-bg-light);
             color: var(--color-text-light);
         }
 
         html.dark {
-            background: var(--color-bg-dark);
+            background-color: var(--color-bg-dark);
             color: var(--color-text-dark);
         }
 
         body.attendance-page {
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 2rem;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--color-card-bg-light);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
             transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
-        .attendance-card {
-            background-color: var(--color-card-bg-light);
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.25);
-            max-width: 650px;
-            width: 100%;
-            padding: 2.5rem 3rem;
-            box-sizing: border-box;
-            color: var(--color-text-light);
-            transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
-        }
-
-        html.dark .attendance-card {
+        html.dark .card {
             background-color: var(--color-card-bg-dark);
-            color: var(--color-text-dark);
-            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.6);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
         }
 
-        .attendance-card h1, .attendance-card h2 {
-            font-weight: 800;
+        .attendance-form-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .history-card {
+            width: 100%;
+            max-width: 700px;
+        }
+        
+        h1, h2 {
+            font-weight: 700;
             text-align: center;
-            margin-bottom: 1.75rem;
             color: inherit;
         }
 
-        .attendance-card h1 {
+        h1 {
             font-size: 2rem;
+            margin-bottom: 1rem;
         }
 
-        .attendance-card h2 {
+        h2 {
             font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
         }
 
         .alert-success {
-            background-color: var(--color-success-bg);
-            border: 1px solid var(--color-success-border);
-            color: var(--color-success-text);
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.25rem;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #34d399;
         }
 
         .alert-error {
-            background-color: var(--color-error-bg);
-            border: 1px solid var(--color-error-border);
-            color: var(--color-error-text);
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.25rem;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #f87171;
+        }
+
+        html.dark .alert-success {
+            background-color: #064e3b;
+            color: #a7f3d0;
+            border-color: #10b981;
+        }
+
+        html.dark .alert-error {
+            background-color: #7f1d1d;
+            color: #fca5a5;
+            border-color: #f87171;
         }
 
         .attendance-info {
             text-align: center;
-            margin-bottom: 1.75rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
             color: var(--color-info-text-light);
-            transition: color var(--transition-speed);
         }
 
         html.dark .attendance-info {
@@ -133,148 +132,155 @@
         }
 
         .attendance-info p {
-            margin: 0.3rem 0;
-            font-size: 1.1rem;
+            margin: 0;
+            font-size: 1rem;
         }
 
-        button.checkin-btn, button.checkout-btn {
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .button-group form {
+            margin-bottom: 0;
+        }
+
+        .action-btn {
             width: 100%;
-            padding: 0.85rem;
+            padding: 0.75rem;
             font-weight: 700;
             color: white;
             border: none;
             border-radius: 0.5rem;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
-            box-shadow: 0 4px 8px rgba(124, 58, 237, 0.4);
         }
 
-        button.checkin-btn {
-            background-color: var(--color-checkin-bg);
+        .checkin-btn {
+            background-color: var(--color-primary);
+        }
+        
+        .checkin-btn:hover {
+            background-color: var(--color-primary-hover);
         }
 
-        button.checkin-btn:hover {
-            background-color: var(--color-checkin-hover);
-            box-shadow: 0 6px 12px rgba(109, 40, 217, 0.6);
+        .checkout-btn {
+            background-color: var(--color-success);
         }
-
-        button.checkout-btn {
-            background-color: var(--color-checkout-bg);
-            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
+        
+        .checkout-btn:hover {
+            background-color: var(--color-success-hover);
         }
-
-        button.checkout-btn:hover {
-            background-color: var(--color-checkout-hover);
-            box-shadow: 0 6px 12px rgba(5, 150, 105, 0.6);
-        }
-
+        
+        /* Table Styles for Desktop */
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 0.5rem;
-            margin-bottom: 1.5rem;
-            transition: color var(--transition-speed);
+            border-spacing: 0 0.75rem;
         }
-
-        thead {
-            background-color: var(--color-table-header-bg-light);
-            border-radius: 0.5rem;
-        }
-
-        html.dark thead {
-            background-color: var(--color-table-header-bg-dark);
-        }
-
+        
         th, td {
-            padding: 0.85rem 1.25rem;
+            padding: 0.75rem 1rem;
             text-align: left;
-            color: var(--color-table-text-light);
-            background-color: var(--color-card-bg-light);
-            border-bottom: none;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
-
-        html.dark th, html.dark td {
-            color: var(--color-table-text-dark);
-            background-color: var(--color-card-bg-dark);
-        }
-
-        tbody tr {
             border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: var(--color-bg-light);
             transition: background-color var(--transition-speed);
         }
-
-        tbody tr:hover {
-            background-color: #e0d7f9;
+        
+        html.dark th, html.dark td {
+            background-color: var(--color-table-header-dark);
         }
 
-        html.dark tbody tr:hover {
-            background-color: #5b4b8a;
+        th {
+            font-weight: 700;
+            color: var(--color-text-light);
+            background-color: var(--color-table-header-light);
+        }
+
+        html.dark th {
+            color: var(--color-text-dark);
+            background-color: var(--color-table-header-dark);
+        }
+        
+        tbody tr:hover td {
+            background-color: #e2e8f0;
+        }
+
+        html.dark tbody tr:hover td {
+            background-color: #2d3748;
+        }
+
+        .empty-row td {
+            text-align: center;
+            color: var(--color-info-text-light);
+        }
+        
+        html.dark .empty-row td {
+            color: var(--color-info-text-dark);
         }
 
         .pagination {
-            text-align: center;
-            margin-top: 1.25rem;
-            color: var(--color-pagination-text-light);
-            transition: color var(--transition-speed);
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+            color: var(--color-info-text-light);
         }
-
+        
         html.dark .pagination {
-            color: var(--color-pagination-text-dark);
+            color: var(--color-info-text-dark);
         }
 
         .logout-btn {
-            display: inline-block;
-            margin-top: 1.25rem;
+            display: block;
             text-align: center;
-            color: var(--color-logout-text-light);
+            width: 100%;
             font-size: 0.9rem;
+            color: var(--color-error);
             cursor: pointer;
             background: none;
             border: none;
             padding: 0;
+            margin-top: 2rem;
             transition: color var(--transition-speed);
         }
-
+        
         .logout-btn:hover {
-            color: var(--color-logout-hover-light);
             text-decoration: underline;
+            color: var(--color-error-text);
         }
 
         html.dark .logout-btn {
-            color: var(--color-logout-text-dark);
+            color: #fca5a5;
         }
 
         html.dark .logout-btn:hover {
-            color: var(--color-logout-hover-dark);
+            color: #f87171;
         }
-
+        
         .app-info-text {
             text-align: center;
-            color: var(--color-app-info-text-light);
-            font-size: 0.8rem;
-            margin-top: 0.75rem;
-            transition: color var(--transition-speed);
+            font-size: 0.75rem;
+            color: var(--color-info-text-light);
+            margin-top: 1rem;
         }
 
         html.dark .app-info-text {
-            color: var(--color-app-info-text-dark);
+            color: var(--color-info-text-dark);
         }
-
-        /* Theme toggle button */
+        
         .theme-toggle {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: var(--color-card-bg-light);
+            top: 1.5rem;
+            right: 1.5rem;
+            background-color: var(--color-card-bg-light);
             border: none;
             border-radius: 9999px;
-            width: 3rem;
-            height: 3rem;
+            width: 2.5rem;
+            height: 2.5rem;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -283,64 +289,105 @@
         }
 
         html.dark .theme-toggle {
-            background: var(--color-card-bg-dark);
-            box-shadow: 0 2px 6px rgba(124, 58, 237, 0.7);
+            background-color: var(--color-card-bg-dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-
+        
         .theme-toggle svg {
-            width: 1.5rem;
-            height: 1.5rem;
-            fill: var(--color-primary);
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: var(--color-text-light);
             transition: fill var(--transition-speed);
         }
-
+        
         html.dark .theme-toggle svg {
             fill: var(--color-text-dark);
         }
-
-        /* Responsive styles */
-        @media (max-width: 640px) {
-            .attendance-card {
-                padding: 1.5rem 1.5rem;
+        
+        /* Responsive styles for Mobile */
+        @media (max-width: 1024px) {
+            body.attendance-page {
+                flex-direction: column;
+                align-items: center;
+                padding: 1.5rem;
+            }
+            .attendance-form-card, .history-card {
                 max-width: 100%;
-                margin: 1rem;
+                width: 100%;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.75rem;
             }
 
-            .attendance-card h1 {
-                font-size: 1.5rem;
+            h2 {
+                font-size: 1.25rem;
             }
-
-            .attendance-card h2 {
-                font-size: 1.125rem;
-            }
-
-            .attendance-info p {
-                font-size: 1rem;
-            }
-
-            button.checkin-btn, button.checkout-btn {
-                font-size: 1rem;
-                padding: 0.65rem;
-            }
-
+            
             table {
-                font-size: 0.875rem;
+                display: block;
+                border-spacing: 0;
             }
 
-            th, td {
-                padding: 0.5rem 0.75rem;
+            thead {
+                display: none;
             }
 
-            .pagination {
-                font-size: 0.875rem;
+            tbody, tr, td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
             }
 
-            .logout-btn {
-                font-size: 0.8rem;
+            tr {
+                margin-bottom: 1rem;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                background-color: var(--color-card-bg-light);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
+            html.dark tr {
+                background-color: var(--color-card-bg-dark);
             }
 
-            .app-info-text {
-                font-size: 0.7rem;
+            td {
+                text-align: right;
+                padding: 0.5rem 1rem;
+                border-bottom: 1px solid var(--color-border-light);
+            }
+            
+            html.dark td {
+                border-bottom: 1px solid var(--color-border-dark);
+            }
+
+            td:last-child {
+                border-bottom: none;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                float: left;
+                color: var(--color-text-light);
+            }
+
+            html.dark td::before {
+                color: var(--color-text-dark);
+            }
+            
+            .empty-row {
+                background-color: transparent;
+                box-shadow: none;
+                margin-bottom: 0;
+                padding: 0;
+            }
+
+            .empty-row td {
+                text-align: center;
+                border-bottom: none;
             }
         }
     </style>
@@ -351,17 +398,17 @@
             <path d="M12 3a9 9 0 0 0 0 18 9 9 0 0 0 0-18zm0 16a7 7 0 0 1 0-14 7 7 0 0 1 0 14z"/>
         </svg>
     </button>
-    <div class="attendance-card">
+    <div class="attendance-form-card card">
         <h1>Absensi Karyawan</h1>
 
         @if (session('success'))
-            <div class="alert-success" role="alert">
+            <div class="alert alert-success" role="alert">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="alert-error" role="alert">
+            <div class="alert alert-error" role="alert">
                 {{ session('error') }}
             </div>
         @endif
@@ -372,25 +419,34 @@
             <p id="current-time">Waktu: {{ \Carbon\Carbon::now()->format('H:i:s') }}</p>
         </div>
 
-        @if (!$todayAttendance)
-            <form action="{{ route('attendance.checkin') }}" method="POST" class="mb-6">
-                @csrf
-                <button type="submit" class="checkin-btn">Check-in Sekarang</button>
-            </form>
-        @elseif ($todayAttendance && !$todayAttendance->check_out_time)
-            <form action="{{ route('attendance.checkout') }}" method="POST" class="mb-6">
-                @csrf
-                <button type="submit" class="checkout-btn">Check-out Sekarang</button>
-            </form>
-        @else
-            <div class="attendance-info">
-                <p>Anda telah Check-in dan Check-out hari ini.</p>
-                <p>Check-in: {{ $todayAttendance->check_in_time->format('H:i:s') }}</p>
-                <p>Check-out: {{ $todayAttendance->check_out_time->format('H:i:s') }}</p>
-                <p>Lembur: {{ $todayAttendance->is_overtime ? 'Ya' : 'Tidak' }}</p>
-            </div>
-        @endif
+        <div class="button-group">
+            @if (!$todayAttendance)
+                <form action="{{ route('attendance.checkin') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="action-btn checkin-btn">Check-in Sekarang</button>
+                </form>
+            @elseif ($todayAttendance && !$todayAttendance->check_out_time)
+                <form action="{{ route('attendance.checkout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="action-btn checkout-btn">Check-out Sekarang</button>
+                </form>
+            @else
+                <div class="attendance-info">
+                    <p>Anda telah Check-in dan Check-out hari ini.</p>
+                    <p>Check-in: {{ $todayAttendance->check_in_time->format('H:i:s') }}</p>
+                    <p>Check-out: {{ $todayAttendance->check_out_time->format('H:i:s') }}</p>
+                </div>
+            @endif
+        </div>
+        
+        <form action="{{ route('logout') }}" method="POST" style="text-align:center;">
+            @csrf
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+        <p class="app-info-text">Version 0.8 Alpha</p>
+    </div>
 
+    <div class="history-card card">
         <h2>Riwayat Absensi Anda</h2>
         <table>
             <thead>
@@ -405,17 +461,17 @@
             <tbody>
                 @forelse ($attendances as $attendance)
                     <tr>
-                        <td>{{ $attendance->check_in_time->translatedFormat('d M Y') }}</td>
-                        <td>{{ $attendance->check_in_time->format('H:i:s') }}</td>
-                        <td>
+                        <td data-label="Tanggal">{{ $attendance->check_in_time->translatedFormat('d M Y') }}</td>
+                        <td data-label="Check-in">{{ $attendance->check_in_time->format('H:i:s') }}</td>
+                        <td data-label="Check-out">
                             {{ $attendance->check_out_time ? $attendance->check_out_time->format('H:i:s') : 'Belum Check-out' }}
                         </td>
-                        <td>{{ $attendance->is_overtime ? 'Ya' : 'Tidak' }}</td>
-                        <td>{{ $attendance->is_late ? 'Ya' : 'Tidak' }}</td>
+                        <td data-label="Lembur">{{ $attendance->is_overtime ? 'Ya' : 'Tidak' }}</td>
+                        <td data-label="Terlambat">{{ $attendance->is_late ? 'Ya' : 'Tidak' }}</td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="5" style="text-align:center; color:#6b7280;">Belum ada riwayat absensi.</td>
+                    <tr class="empty-row">
+                        <td colspan="5">Belum ada riwayat absensi.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -424,32 +480,21 @@
         <div class="pagination">
             {{ $attendances->links() }}
         </div>
-
-        <form action="{{ route('logout') }}" method="POST" style="text-align:center;">
-            @csrf
-            <button type="submit" class="logout-btn">Logout</button>
-        </form>
-        <p class="app-info-text">Version 0.8 Alpha </p>
     </div>
 
     <script>
-        // Update current time every second
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').innerText = 'Waktu: ' + now.toLocaleTimeString('id-ID');
         }
         setInterval(updateTime, 1000);
 
-        // Theme toggle logic
         const themeToggleBtn = document.getElementById('theme-toggle');
         const htmlElement = document.documentElement;
 
-        // Load saved theme from localStorage or default to light
         const savedTheme = localStorage.getItem('theme') || 'light';
-        htmlElement.classList.remove('light', 'dark');
         htmlElement.classList.add(savedTheme);
 
-        // Update toggle icon based on theme
         function updateToggleIcon(theme) {
             const svg = themeToggleBtn.querySelector('svg');
             if (theme === 'dark') {
@@ -461,8 +506,8 @@
         updateToggleIcon(savedTheme);
 
         themeToggleBtn.addEventListener('click', () => {
-            let currentTheme = htmlElement.classList.contains('light') ? 'light' : 'dark';
-            let newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            const currentTheme = htmlElement.classList.contains('light') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             htmlElement.classList.remove('light', 'dark');
             htmlElement.classList.add(newTheme);
             localStorage.setItem('theme', newTheme);
