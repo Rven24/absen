@@ -104,8 +104,7 @@
 </style>
 <body class="login-page">
     <div class="login-card">
-        <img src="https://via.placeholder.com/150x50?text=Logo" alt="Logo" style="display: block; margin: 0 auto 1rem; max-width: 150px; height: auto;">
-        {{-- <img src="{{ asset('images/your-logo.png') }}" alt="Logo"> --}}
+        <img src="" alt="">
         <h2>Sign in to your account</h2>
 
         @if (session('status'))
