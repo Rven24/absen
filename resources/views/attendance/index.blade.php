@@ -526,14 +526,14 @@
             @csrf
             <button type="submit" class="logout-btn">Logout</button>
         </form>
-        <p class="app-info-text">Version 0.8 Alpha</p>
+        <p class="app-info-text">Version 1.0</p>
     </div>
 
     <div class="daily-income-card card">
         <h2>Input Pendapatan Harian</h2>
         @php
             $canEditDailyIncome = false;
-            $editWindowInMinutes = 60; // 1 jam
+            $editWindowInMinutes = 60;
             if ($todayDailyIncome && $todayDailyIncome->created_at && $todayDailyIncome->created_at->diffInMinutes(now()) <= $editWindowInMinutes) {
                 $canEditDailyIncome = true;
             }
@@ -545,13 +545,44 @@
                 <p>Tunai: Rp. {{ number_format($todayDailyIncome->amount, 0, ',', '.') }}</p>
                 <p>Transfer: Rp. {{ number_format($todayDailyIncome->transfer_income, 0, ',', '.') }}</p>
                 @if ($canEditDailyIncome)
-                    <button type="button" class="action-btn checkin-btn" id="openEditDailyIncomeModalBtn" style="margin-top: 1rem;">Edit Pendapatan</button>
+                    <form id="dailyIncomeForm" method="POST" action="/employee/daily-income/{{ $todayDailyIncome->id }}">
+                        @csrf
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="form-group" style="margin-top: 1rem; margin-bottom: 1rem;">
+                            <label for="amount" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Tunai (Rupiah)</label>
+                            <input type="number" id="amount" name="amount" required min="0" value="{{ old('amount', $todayDailyIncome->amount ?? '') }}"
+                                   style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
+                                   placeholder="Contoh: 150000">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="transfer_income" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Transfer (Rupiah)</label>
+                            <input type="number" id="transfer_income" name="transfer_income" required min="0" value="{{ old('transfer_income', $todayDailyIncome->transfer_income ?? '') }}"
+                                   style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
+                                   placeholder="Contoh: 50000">
+                        </div>
+                        <button type="submit" class="action-btn checkin-btn" style="background-color: var(--color-primary);">Update Pendapatan Harian</button>
+                    </form>
                 @else
                     <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-info-text-light);">Batas waktu edit telah berakhir.</p>
                 @endif
             </div>
         @else
-            <button type="button" class="action-btn checkin-btn" id="openCreateDailyIncomeModalBtn">Kirim Pendapatan Harian</button>
+            <form id="dailyIncomeForm" method="POST" action="{{ route('employee.daily-income.store') }}">
+                @csrf
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="amount" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Tunai (Rupiah)</label>
+                    <input type="number" id="amount" name="amount" required min="0"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
+                            placeholder="Contoh: 150000">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="transfer_income" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Transfer (Rupiah)</label>
+                    <input type="number" id="transfer_income" name="transfer_income" required min="0"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
+                            placeholder="Contoh: 50000">
+                </div>
+                <button type="submit" class="action-btn checkin-btn" style="background-color: var(--color-primary);">Kirim Pendapatan Harian</button>
+            </form>
         @endif
     </div>
 
@@ -591,31 +622,6 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="dailyIncomeModal">
-        <div class="modal-content">
-            <button type="button" class="modal-close-btn" id="closeDailyIncomeModalBtn">&times;</button>
-            <h2 id="modalTitle"></h2>
-            <form id="dailyIncomeForm" method="POST">
-                @csrf
-                <input type="hidden" name="_method" value="POST" id="formMethod">
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label for="modal_amount" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Tunai (Rupiah)</label>
-                    <input type="number" id="modal_amount" name="amount" required min="0"
-                           style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
-                           placeholder="Contoh: 150000">
-                </div>
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="modal_transfer_income" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Transfer (Rupiah)</label>
-                    <input type="number" id="modal_transfer_income" name="transfer_income" required min="0"
-                           style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
-                           placeholder="Contoh: 50000">
-                </div>
-                <button type="submit" class="action-btn checkin-btn" id="modalSubmitBtn" style="background-color: var(--color-primary);"></button>
-            </form>
-        </div>
-    </div>
-
     <script>
         function updateTime() {
             const now = new Date();
@@ -647,85 +653,6 @@
             localStorage.setItem('theme', newTheme);
             updateToggleIcon(newTheme);
         });
-
-        const dailyIncomeModal = document.getElementById('dailyIncomeModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const dailyIncomeForm = document.getElementById('dailyIncomeForm');
-        const modalAmountInput = document.getElementById('modal_amount');
-        const modalTransferIncomeInput = document.getElementById('modal_transfer_income');
-        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-        const formMethodInput = document.getElementById('formMethod');
-
-        const openCreateDailyIncomeModalBtn = document.getElementById('openCreateDailyIncomeModalBtn');
-        const openEditDailyIncomeModalBtn = document.getElementById('openEditDailyIncomeModalBtn');
-        const closeDailyIncomeModalBtn = document.getElementById('closeDailyIncomeModalBtn');
-
-        function showModal() {
-            dailyIncomeModal.classList.add('show');
-        }
-
-        function hideModal() {
-            dailyIncomeModal.classList.remove('show');
-        }
-
-        if (openCreateDailyIncomeModalBtn) {
-            openCreateDailyIncomeModalBtn.addEventListener('click', () => {
-                modalTitle.innerText = 'Input Pendapatan Harian';
-                dailyIncomeForm.action = "{{ route('employee.daily-income.store') }}";
-                modalAmountInput.value = '';
-                modalTransferIncomeInput.value = '';
-                modalSubmitBtn.innerText = 'Kirim Pendapatan Harian';
-                formMethodInput.value = 'POST';
-                showModal();
-            });
-        }
-
-        if (openEditDailyIncomeModalBtn) {
-            openEditDailyIncomeModalBtn.addEventListener('click', () => {
-                modalTitle.innerText = 'Edit Pendapatan Harian';
-                const dailyIncomeId = {{ $todayDailyIncome ? $todayDailyIncome->id : 'null' }};
-                dailyIncomeForm.action = `/employee/daily-income/${dailyIncomeId}`;
-
-                modalAmountInput.value = {{ json_encode($todayDailyIncome ? $todayDailyIncome->amount : '') }};
-                modalTransferIncomeInput.value = {{ json_encode($todayDailyIncome ? $todayDailyIncome->transfer_income : '') }};
-                
-                modalSubmitBtn.innerText = 'Update Pendapatan Harian';
-                formMethodInput.value = 'PUT';
-                showModal();
-            });
-        }
-
-        closeDailyIncomeModalBtn.addEventListener('click', hideModal);
-
-        dailyIncomeModal.addEventListener('click', (e) => {
-            if (e.target === dailyIncomeModal) {
-                hideModal();
-            }
-        });
-
-        @if ($errors->any())
-            const isCreateError = "{{ old('amount') }}" !== "" || "{{ old('transfer_income') }}" !== "";
-            const isUpdateError = "{{ session('edit_daily_income_error') }}" === "true";
-
-            if (isCreateError) {
-                modalTitle.innerText = 'Input Pendapatan Harian';
-                dailyIncomeForm.action = "{{ route('employee.daily-income.store') }}";
-                modalAmountInput.value = {{ json_encode(old('amount')) }};
-                modalTransferIncomeInput.value = {{ json_encode(old('transfer_income')) }};
-                modalSubmitBtn.innerText = 'Kirim Pendapatan Harian';
-                formMethodInput.value = 'POST';
-                showModal();
-            } else if (isUpdateError) {
-                modalTitle.innerText = 'Edit Pendapatan Harian';
-                const dailyIncomeId = {{ $todayDailyIncome ? $todayDailyIncome->id : 'null' }};
-                dailyIncomeForm.action = `/employee/daily-income/${dailyIncomeId}`;
-                modalAmountInput.value = {{ json_encode(old('amount', $todayDailyIncome->amount ?? '')) }};
-                modalTransferIncomeInput.value = {{ json_encode(old('transfer_income', $todayDailyIncome->transfer_income ?? '')) }};
-                modalSubmitBtn.innerText = 'Update Pendapatan Harian';
-                formMethodInput.value = 'PUT';
-                showModal();
-            }
-        @endif
     </script>
 </body>
 </html>
