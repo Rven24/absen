@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\EmployeeDailyIncomeController; // Import controller baru untuk pendapatan harian
 
 /*
 |--------------------------------------------------------------------------
@@ -24,15 +25,18 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
-// Override Filament login routes
+// Override Filament login routes (jika Anda menggunakan login kustom)
 Route::get('absen/login', [AuthenticatedSessionController::class, 'create'])->name('filament.absen.auth.login');
 Route::post('absen/login', [AuthenticatedSessionController::class, 'store'])->name('filament.absen.auth.login.post');
 
 Route::middleware(['auth'])->group(function () {
-    // Route untuk karyawan
+    // Route untuk karyawan (Absensi)
     Route::get('/absensi', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/absensi/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.checkin');
     Route::post('/absensi/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.checkout');
+
+    // Route Baru untuk Pengiriman Pendapatan Harian oleh Karyawan
+    Route::post('/employee/daily-income', [EmployeeDailyIncomeController::class, 'store'])->name('employee.daily-income.store');
 
     // Redirect setelah login
     Route::get('/dashboard', function () {

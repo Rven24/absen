@@ -17,8 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Widgets\RecentAttendancesTable;
-use App\Filament\Widgets\DailyAttendanceOverview;
+use App\Filament\Pages\DailyIncomesPage;
 
 class AbsenPanelProvider extends PanelProvider
 {
@@ -37,6 +36,7 @@ class AbsenPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                DailyIncomesPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

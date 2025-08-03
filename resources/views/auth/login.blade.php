@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - App Anda</title>
+    <title>Karyanusa Printing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Optimasi tambahan untuk responsif */
+        /* Optimasi tambahan untuk responsif di hp */
         @media (max-width: 640px) {
             .max-w-md {
                 max-width: 100%;
             }
             .p-8 {
-                padding: 1.5rem; /* Mengurangi padding di layar kecil */
+                padding: 1.5rem; /* Mengurangi padding */
             }
             .text-3xl {
                 font-size: 2rem; /* Mengurangi ukuran font judul */
@@ -36,13 +36,13 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input id="email" name="email" type="email" required autofocus autocomplete="username" placeholder="you@example.com"
+                    <label for="email" class="block text-sm font-medium text-gray-700">Masukkan Email</label>
+                    <input id="email" name="email" type="email" required autofocus autocomplete="username" placeholder="johndoe@example.com"
                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-300 ease-in-out" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
                 </div>
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Masukkan Password</label>
                     <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••"
                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-300 ease-in-out" />
                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-500 text-sm" />

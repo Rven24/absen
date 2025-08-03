@@ -68,6 +68,11 @@
             max-width: 400px;
         }
 
+        .daily-income-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
         .history-card {
             width: 100%;
             max-width: 700px;
@@ -120,6 +125,18 @@
             border-color: #f87171;
         }
 
+        .alert-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        html.dark .alert-info {
+            background-color: #1e3a8a;
+            color: #bfdbfe;
+            border-color: #60a5fa;
+        }
+
         .attendance-info {
             text-align: center;
             margin-bottom: 2rem;
@@ -140,6 +157,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            margin-bottom: 0;
         }
         
         .button-group form {
@@ -174,7 +192,6 @@
             background-color: var(--color-success-hover);
         }
         
-        /* Table Styles for Desktop */
         table {
             width: 100%;
             border-collapse: separate;
@@ -303,17 +320,82 @@
         html.dark .theme-toggle svg {
             fill: var(--color-text-dark);
         }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--color-card-bg-light);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        html.dark .modal-content {
+            background-color: var(--color-card-bg-dark);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--color-text-light);
+            transition: color var(--transition-speed);
+        }
+
+        html.dark .modal-close-btn {
+            color: var(--color-text-dark);
+        }
+
+        .modal-close-btn:hover {
+            color: var(--color-error);
+        }
         
-        /* Responsive styles for Mobile */
         @media (max-width: 1024px) {
             body.attendance-page {
                 flex-direction: column;
                 align-items: center;
                 padding: 1.5rem;
             }
-            .attendance-form-card, .history-card {
+            .attendance-form-card, .daily-income-card, .history-card {
                 max-width: 100%;
                 width: 100%;
+                padding: 1.5rem;
+            }
+            .modal-content {
                 padding: 1.5rem;
             }
         }
@@ -347,7 +429,7 @@
                 padding: 1rem;
                 border-radius: 0.5rem;
                 background-color: var(--color-card-bg-light);
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                box-shadow: 0 1px 3px (0,0,0,0.05);
             }
             html.dark tr {
                 background-color: var(--color-card-bg-dark);
@@ -398,6 +480,7 @@
             <path d="M12 3a9 9 0 0 0 0 18 9 9 0 0 0 0-18zm0 16a7 7 0 0 1 0-14 7 7 0 0 1 0 14z"/>
         </svg>
     </button>
+
     <div class="attendance-form-card card">
         <h1>Absensi Karyawan</h1>
 
@@ -446,6 +529,32 @@
         <p class="app-info-text">Version 0.8 Alpha</p>
     </div>
 
+    <div class="daily-income-card card">
+        <h2>Input Pendapatan Harian</h2>
+        @php
+            $canEditDailyIncome = false;
+            $editWindowInMinutes = 60; // 1 jam
+            if ($todayDailyIncome && $todayDailyIncome->created_at && $todayDailyIncome->created_at->diffInMinutes(now()) <= $editWindowInMinutes) {
+                $canEditDailyIncome = true;
+            }
+        @endphp
+
+        @if ($todayDailyIncome)
+            <div class="alert alert-info" role="alert">
+                <p>Anda sudah mengirim pendapatan harian hari ini.</p>
+                <p>Tunai: Rp. {{ number_format($todayDailyIncome->amount, 0, ',', '.') }}</p>
+                <p>Transfer: Rp. {{ number_format($todayDailyIncome->transfer_income, 0, ',', '.') }}</p>
+                @if ($canEditDailyIncome)
+                    <button type="button" class="action-btn checkin-btn" id="openEditDailyIncomeModalBtn" style="margin-top: 1rem;">Edit Pendapatan</button>
+                @else
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-info-text-light);">Batas waktu edit telah berakhir.</p>
+                @endif
+            </div>
+        @else
+            <button type="button" class="action-btn checkin-btn" id="openCreateDailyIncomeModalBtn">Kirim Pendapatan Harian</button>
+        @endif
+    </div>
+
     <div class="history-card card">
         <h2>Riwayat Absensi Anda</h2>
         <table>
@@ -482,6 +591,31 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="dailyIncomeModal">
+        <div class="modal-content">
+            <button type="button" class="modal-close-btn" id="closeDailyIncomeModalBtn">&times;</button>
+            <h2 id="modalTitle"></h2>
+            <form id="dailyIncomeForm" method="POST">
+                @csrf
+                <input type="hidden" name="_method" value="POST" id="formMethod">
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="modal_amount" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Tunai (Rupiah)</label>
+                    <input type="number" id="modal_amount" name="amount" required min="0"
+                           style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
+                           placeholder="Contoh: 150000">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="modal_transfer_income" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Jumlah Transfer (Rupiah)</label>
+                    <input type="number" id="modal_transfer_income" name="transfer_income" required min="0"
+                           style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border-light); border-radius: 0.5rem; background-color: var(--color-card-bg-light); color: var(--color-text-light); transition: border-color var(--transition-speed), background-color var(--transition-speed);"
+                           placeholder="Contoh: 50000">
+                </div>
+                <button type="submit" class="action-btn checkin-btn" id="modalSubmitBtn" style="background-color: var(--color-primary);"></button>
+            </form>
+        </div>
+    </div>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -513,6 +647,85 @@
             localStorage.setItem('theme', newTheme);
             updateToggleIcon(newTheme);
         });
+
+        const dailyIncomeModal = document.getElementById('dailyIncomeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const dailyIncomeForm = document.getElementById('dailyIncomeForm');
+        const modalAmountInput = document.getElementById('modal_amount');
+        const modalTransferIncomeInput = document.getElementById('modal_transfer_income');
+        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+        const formMethodInput = document.getElementById('formMethod');
+
+        const openCreateDailyIncomeModalBtn = document.getElementById('openCreateDailyIncomeModalBtn');
+        const openEditDailyIncomeModalBtn = document.getElementById('openEditDailyIncomeModalBtn');
+        const closeDailyIncomeModalBtn = document.getElementById('closeDailyIncomeModalBtn');
+
+        function showModal() {
+            dailyIncomeModal.classList.add('show');
+        }
+
+        function hideModal() {
+            dailyIncomeModal.classList.remove('show');
+        }
+
+        if (openCreateDailyIncomeModalBtn) {
+            openCreateDailyIncomeModalBtn.addEventListener('click', () => {
+                modalTitle.innerText = 'Input Pendapatan Harian';
+                dailyIncomeForm.action = "{{ route('employee.daily-income.store') }}";
+                modalAmountInput.value = '';
+                modalTransferIncomeInput.value = '';
+                modalSubmitBtn.innerText = 'Kirim Pendapatan Harian';
+                formMethodInput.value = 'POST';
+                showModal();
+            });
+        }
+
+        if (openEditDailyIncomeModalBtn) {
+            openEditDailyIncomeModalBtn.addEventListener('click', () => {
+                modalTitle.innerText = 'Edit Pendapatan Harian';
+                const dailyIncomeId = {{ $todayDailyIncome ? $todayDailyIncome->id : 'null' }};
+                dailyIncomeForm.action = `/employee/daily-income/${dailyIncomeId}`;
+
+                modalAmountInput.value = {{ json_encode($todayDailyIncome ? $todayDailyIncome->amount : '') }};
+                modalTransferIncomeInput.value = {{ json_encode($todayDailyIncome ? $todayDailyIncome->transfer_income : '') }};
+                
+                modalSubmitBtn.innerText = 'Update Pendapatan Harian';
+                formMethodInput.value = 'PUT';
+                showModal();
+            });
+        }
+
+        closeDailyIncomeModalBtn.addEventListener('click', hideModal);
+
+        dailyIncomeModal.addEventListener('click', (e) => {
+            if (e.target === dailyIncomeModal) {
+                hideModal();
+            }
+        });
+
+        @if ($errors->any())
+            const isCreateError = "{{ old('amount') }}" !== "" || "{{ old('transfer_income') }}" !== "";
+            const isUpdateError = "{{ session('edit_daily_income_error') }}" === "true";
+
+            if (isCreateError) {
+                modalTitle.innerText = 'Input Pendapatan Harian';
+                dailyIncomeForm.action = "{{ route('employee.daily-income.store') }}";
+                modalAmountInput.value = {{ json_encode(old('amount')) }};
+                modalTransferIncomeInput.value = {{ json_encode(old('transfer_income')) }};
+                modalSubmitBtn.innerText = 'Kirim Pendapatan Harian';
+                formMethodInput.value = 'POST';
+                showModal();
+            } else if (isUpdateError) {
+                modalTitle.innerText = 'Edit Pendapatan Harian';
+                const dailyIncomeId = {{ $todayDailyIncome ? $todayDailyIncome->id : 'null' }};
+                dailyIncomeForm.action = `/employee/daily-income/${dailyIncomeId}`;
+                modalAmountInput.value = {{ json_encode(old('amount', $todayDailyIncome->amount ?? '')) }};
+                modalTransferIncomeInput.value = {{ json_encode(old('transfer_income', $todayDailyIncome->transfer_income ?? '')) }};
+                modalSubmitBtn.innerText = 'Update Pendapatan Harian';
+                formMethodInput.value = 'PUT';
+                showModal();
+            }
+        @endif
     </script>
 </body>
 </html>

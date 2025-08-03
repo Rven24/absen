@@ -12,7 +12,7 @@ class RecentAttendancesTable extends BaseWidget
     {
         return $table
             ->query(
-                // ...
+                // 
             )
             ->columns([
                 // ...
