@@ -29,6 +29,7 @@ class AbsenPanelProvider extends PanelProvider
             ->id('absen')
             ->path('absen')
             ->login()
+            ->brandName('Karyanusa')
             ->colors([
                 'primary' => Color::Blue,
             ])
