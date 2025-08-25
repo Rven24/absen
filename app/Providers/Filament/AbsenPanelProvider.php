@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\DailyIncomesPage;
+use App\Filament\Pages\Report;
 
 class AbsenPanelProvider extends PanelProvider
 {
@@ -38,6 +39,7 @@ class AbsenPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
                 DailyIncomesPage::class,
+                Report::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
