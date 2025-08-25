@@ -15,6 +15,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\WithPagination;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Report extends Page implements HasForms, HasTable
 {
@@ -64,8 +65,7 @@ class Report extends Page implements HasForms, HasTable
                     ->live(),
             ]);
     }
-    
-    // Ini adalah satu-satunya metode 'table' yang diperlukan oleh trait HasTable
+
     public function table(Table $table): Table
     {
         $selectedMonth = $this->selected_month ?? now()->month;
@@ -87,7 +87,42 @@ class Report extends Page implements HasForms, HasTable
             ->heading('Laporan Absensi Karyawan');
     }
 
-    // Metode untuk mengambil data pendapatan harian
+    protected function getActions(): array
+    {
+        return [
+            \Filament\Pages\Actions\Action::make('exportPdf')
+                ->label('Export ke PDF')
+                ->color('primary')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->action('generatePdf'),
+        ];
+    }
+
+    public function generatePdf()
+    {
+        // Ambil data absensi menggunakan metode 'table'
+        $attendances = $this->table(Table::make($this))->getRecords();
+        
+        // Ambil data pendapatan menggunakan metode 'getDailyIncomes'
+        $incomes = $this->getDailyIncomes();
+
+        // Persiapan data untuk dikirim ke view
+        $data = [
+            'month_name' => Carbon::create(null, $this->selected_month)->locale('id')->monthName,
+            'year' => $this->selected_year,
+            'attendances' => $attendances,
+            'incomes' => $incomes,
+        ];
+
+        // Buat PDF dari view Blade
+        $pdf = Pdf::loadView('pdf.monthly_report', $data);
+
+        // Kembalikan PDF untuk diunduh
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->stream();
+        }, 'Laporan_Bulanan_' . now()->format('Y-m') . '.pdf');
+    }
+
     public function getDailyIncomes()
     {
         $selectedMonth = $this->selected_month ?? now()->month;
